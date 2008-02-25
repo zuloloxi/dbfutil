@@ -30,7 +30,6 @@
     <Borland.ProjectType />
     <BorlandProject>
 <BorlandProject><Delphi.Personality><Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters></Parameters><VersionInfo><VersionInfo Name="IncludeVerInfo">False</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">1</VersionInfo><VersionInfo Name="MinorVer">0</VersionInfo><VersionInfo Name="Release">0</VersionInfo><VersionInfo Name="Build">0</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">False</VersionInfo><VersionInfo Name="Locale">4105</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="FileVersion">1.0.0.0</VersionInfoKeys><VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys></VersionInfoKeys><Excluded_Packages>
-      
       <Excluded_Packages Name="F:\Documents\bruce\Borland Studio Projects\Bpl\PGP2Comp_D10.bpl">PGP  D10</Excluded_Packages>
     </Excluded_Packages><Source><Source Name="MainSource">dbfUtil.dpr</Source></Source></Delphi.Personality></BorlandProject></BorlandProject>
   </ProjectExtensions>
@@ -39,99 +38,99 @@
     <DelphiCompile Include="dbfUtil.dpr">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
-    <DCCReference Include="dbfAboutBox.pas">
+    <DCCReference Include="..\source\dbfAboutBox.pas">
       <Form>frmAboutBox</Form>
     </DCCReference>
-    <DCCReference Include="dbfBackLinkDisplay.pas">
+    <DCCReference Include="..\source\dbfBackLinkDisplay.pas">
       <Form>frmBackLink</Form>
     </DCCReference>
-    <DCCReference Include="dbfBadFieldView.pas">
+    <DCCReference Include="..\source\dbfBadFieldView.pas">
       <Form>fmBadFieldView</Form>
     </DCCReference>
-    <DCCReference Include="dbfBMPMemoDisplay.pas">
+    <DCCReference Include="..\source\dbfBMPMemoDisplay.pas">
       <Form>fmBMPMemoDisplay</Form>
     </DCCReference>
-    <DCCReference Include="dbfCommon.pas" />
-    <DCCReference Include="dbfConstant.pas" />
-    <DCCReference Include="dbfConvert.pas">
+    <DCCReference Include="..\source\dbfCommon.pas" />
+    <DCCReference Include="..\source\dbfConstant.pas" />
+    <DCCReference Include="..\source\dbfConvert.pas">
       <Form>ConvertFileForm</Form>
     </DCCReference>
-    <DCCReference Include="dbfConvertFixDBV.pas">
+    <DCCReference Include="..\source\dbfConvertFixDBV.pas">
       <Form>frmConvertFixDBV</Form>
     </DCCReference>
-    <DCCReference Include="dbfCreate.pas" />
-    <DCCReference Include="dbfCreateFile.pas">
+    <DCCReference Include="..\source\dbfCreate.pas" />
+    <DCCReference Include="..\source\dbfCreateFile.pas">
       <Form>fmCreateFile</Form>
     </DCCReference>
-    <DCCReference Include="dbfDataGrid.pas">
+    <DCCReference Include="..\source\dbfDataGrid.pas">
       <Form>frmDataGrid</Form>
     </DCCReference>
-    <DCCReference Include="dbfExport.pas">
+    <DCCReference Include="..\source\dbfExport.pas">
       <Form>frmExport</Form>
     </DCCReference>
-    <DCCReference Include="dbfFieldEdit.pas">
+    <DCCReference Include="..\source\dbfFieldEdit.pas">
       <Form>fmFieldEdit</Form>
     </DCCReference>
-    <DCCReference Include="dbfFieldHexView.pas">
+    <DCCReference Include="..\source\dbfFieldHexView.pas">
       <Form>fmFieldHexView</Form>
     </DCCReference>
-    <DCCReference Include="dbfFieldView.pas">
+    <DCCReference Include="..\source\dbfFieldView.pas">
       <Form>fmViewField</Form>
     </DCCReference>
-    <DCCReference Include="dbfFixedMemoDisplay.pas">
+    <DCCReference Include="..\source\dbfFixedMemoDisplay.pas">
       <Form>frmFixedMemo</Form>
     </DCCReference>
-    <DCCReference Include="dbfFixedMemoHexDisplay.pas">
+    <DCCReference Include="..\source\dbfFixedMemoHexDisplay.pas">
       <Form>frmFixedMemoHex</Form>
     </DCCReference>
-    <DCCReference Include="dbfFixFields.pas">
+    <DCCReference Include="..\source\dbfFixFields.pas">
       <Form>fmFixFields</Form>
     </DCCReference>
-    <DCCReference Include="dbfHeaderEdit.pas">
+    <DCCReference Include="..\source\dbfHeaderEdit.pas">
       <Form>frmHeaderEdit</Form>
     </DCCReference>
-    <DCCReference Include="dbfMain.pas">
+    <DCCReference Include="..\source\dbfMain.pas">
       <Form>frmMainDBF</Form>
     </DCCReference>
-    <DCCReference Include="dbfMemoFileDisplay.pas" />
-    <DCCReference Include="dbfMsgs.pas" />
-    <DCCReference Include="dbfOptions.pas">
+    <DCCReference Include="..\source\dbfMemoFileDisplay.pas" />
+    <DCCReference Include="..\source\dbfMsgs.pas" />
+    <DCCReference Include="..\source\dbfOptions.pas">
       <Form>fmOptions</Form>
     </DCCReference>
-    <DCCReference Include="dbfRecordDisplay.pas">
+    <DCCReference Include="..\source\dbfRecordDisplay.pas">
       <Form>frmRecordDisplay</Form>
     </DCCReference>
-    <DCCReference Include="dbfRepairHeader.pas">
+    <DCCReference Include="..\source\dbfRepairHeader.pas">
       <Form>frmRepairHeader</Form>
     </DCCReference>
-    <DCCReference Include="dbfRepairRecords.pas">
+    <DCCReference Include="..\source\dbfRepairRecords.pas">
       <Form>frmRepairRecords</Form>
     </DCCReference>
-    <DCCReference Include="dbfResources.pas" />
-    <DCCReference Include="dbfRestructure.pas">
+    <DCCReference Include="..\source\dbfResources.pas" />
+    <DCCReference Include="..\source\dbfRestructure.pas">
       <Form>frmRestructure</Form>
     </DCCReference>
-    <DCCReference Include="dbfRestructureDBF.pas">
+    <DCCReference Include="..\source\dbfRestructureDBF.pas">
       <Form>frmRestructureDBF</Form>
     </DCCReference>
-    <DCCReference Include="dbfScanFields.pas">
+    <DCCReference Include="..\source\dbfScanFields.pas">
       <Form>frmScanFields</Form>
     </DCCReference>
-    <DCCReference Include="dbfScanFieldsMaxMin.pas" />
-    <DCCReference Include="dbfScanInfoDBV.pas">
+    <DCCReference Include="..\source\dbfScanFieldsMaxMin.pas" />
+    <DCCReference Include="..\source\dbfScanInfoDBV.pas">
       <Form>frmScanInfoDBV</Form>
     </DCCReference>
-    <DCCReference Include="dbfStatistics.pas">
+    <DCCReference Include="..\source\dbfStatistics.pas">
       <Form>fmStatistics</Form>
     </DCCReference>
-    <DCCReference Include="dbfStructure.pas" />
-    <DCCReference Include="dbfStructurePrint.pas">
+    <DCCReference Include="..\source\dbfStructure.pas" />
+    <DCCReference Include="..\source\dbfStructurePrint.pas">
       <Form>frmStrucPrint</Form>
     </DCCReference>
-    <DCCReference Include="dbfValidateFile.pas">
+    <DCCReference Include="..\source\dbfValidateFile.pas">
       <Form>frmValidateFile</Form>
     </DCCReference>
-    <DCCReference Include="dbfViewMemo.pas">
+    <DCCReference Include="..\source\dbfViewMemo.pas">
       <Form>MemoDisplayForm</Form>
     </DCCReference>
   </ItemGroup>

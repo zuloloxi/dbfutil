@@ -1,0 +1,31 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{c44421c0-9139-4257-8c60-506cdbbf4621}</ProjectGuid>
+  </PropertyGroup>
+  <ItemGroup />
+  <ItemGroup />
+  <ProjectExtensions>
+    <Borland.Personality>Default.Personality</Borland.Personality>
+    <Borland.ProjectType />
+    <BorlandProject>
+  <BorlandProject xmlns=""> <Default.Personality> </Default.Personality> </BorlandProject></BorlandProject>
+  </ProjectExtensions>
+  <Target Name="dbfUtil">
+    <MSBuild Projects="dbfUtil.dproj" Targets="" />
+  </Target>
+  <Target Name="dbfUtil:Clean">
+    <MSBuild Projects="dbfUtil.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="dbfUtil:Make">
+    <MSBuild Projects="dbfUtil.dproj" Targets="Make" />
+  </Target>
+  <Target Name="Build">
+    <CallTarget Targets="dbfUtil" />
+  </Target>
+  <Target Name="Clean">
+    <CallTarget Targets="dbfUtil:Clean" />
+  </Target>
+  <Target Name="Make">
+    <CallTarget Targets="dbfUtil:Make" />
+  </Target>
+</Project>
