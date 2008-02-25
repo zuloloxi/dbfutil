@@ -475,13 +475,16 @@ Type
     Record
       dbfUserIndex : Integer ;
 
+      dbfOpened     : Boolean ;
+      dbfMemoOpened : Boolean ;
+
       dbfFileName     : TFileName ;
       dbfMemoFileName : TFileName ;
 
       dbfShortDataFileName : TFileName ;
 
-      dbfFileVar      : TFileStreamX ;
-      dbfMemoFileVar  : TFileStreamX ;
+      dbfFileVar     : TFileStreamX ;
+      dbfMemoFileVar : TFileStreamX ;
 
       dbfMemoFormat   : dbfMemoType ;
       dbfMemoFileExt  : String[3]   ;
@@ -512,9 +515,6 @@ Type
       dbfHeader          : xBaseHeaderType   ;
       dbfMemoHeader      : dbfMemoHeaderType ;
       dbfMemoHeaderBytes : Integer           ;
-
-      dbfOpened          : Boolean ;
-      dbfMemoOpened      : Boolean ;
 
       dbfFieldCount      : Integer ;
       dbfFieldMaxWidth   : Integer ;
@@ -5465,7 +5465,7 @@ Procedure TxBase.SetFileName(Const cFileName : TFileName) ;
 
     GetDataAreaPtr^.dbfFileName := cFileName ;
     Try
-      ResetShortFileName ;
+ResetShortFileName ;  // BKC Test - commented out
     Except
       // Ignore error
     End ;
@@ -5949,29 +5949,46 @@ Function TxBase.GetLastFileByte : Byte ;
 ***********************************************************************}
 
 Function TxBase.GetLastUpdate(bShowError : Boolean) : TDateTime ;
+  Procedure DisplayErrorMsg ; near ;
+    Begin
+      ErrorMsg('Invalid Last Update, default (today) used.') ;
+    End ;
+
   Var
-    nYear : Word ;
+    nYear  : Word ;
+    nMonth : Word ;
+    nDay   : Word ;
 
   Begin  { TxBase.GetLastUpdate }
     With GetDataAreaPtr^ , GetFixedHeaderPtr^ do
       Begin
-        With LastUpdate do
+        nYear  := LastUpdate.Year  ;
+        nMonth := LastUpdate.Month ;
+        nDay   := LastUpdate.Day   ;
+
+        If ((nYear = 0) or (nMonth = 0) or (nDay = 0)) then
           Begin
-            If Year < 80 then
-              nYear := Year + 2000
+            dbfLastUpdate := Now ;
+            DecodeDate(dbfLastUpdate , nYear , nMonth , nDay) ;
+            If bShowError then
+              DisplayErrorMsg ;
+          End
+        Else
+          Begin
+            If nYear < 80 then
+              nYear := nYear + 2000
             Else
-              nYear := Year + 1900 ;
+              nYear := nYear + 1900 ;
 
             Try
-              dbfLastUpdate := EncodeDate(nYear , Month , LastUpdate.Day) ;
+              dbfLastUpdate := EncodeDate(nYear  ,
+                                          nMonth ,
+                                          nDay    ) ;
             Except
               Begin
                 dbfLastUpdate := Now ;
                 If bShowError then
-                  MessageDlg('Invalid Last Update, default (today) used.' ,
-                             mtError ,
-                             [mbOK]  ,
-                             0        ) ;
+                  DisplayErrorMsg ;
               End ;
             End ;
           End ;
@@ -6473,18 +6490,21 @@ Function TxBase.ResetShortFileName : TFileName ;
     bWasOpen : Boolean ;
 
   Begin  { TxBase.ResetShortFileName }
+  {
     bWasOpen := DataFileIsOpen ;
     If bWasOpen then
       dbfCloseDataFileVar ;
-
+  }
     With GetDataAreaPtr^ do
       Begin
         dbfShortDataFileName := bcFileUtilities.ShortFileName(GetDataFileName) ;
         Result := dbfShortDataFileName ;
       End ;
-
+  {
     If bWasOpen then
+    Else
       dbfOpenDataFileVar ;
+  }
   End ;  { TxBase.ResetShortFileName }
 
 
@@ -6528,15 +6548,16 @@ Procedure TxBase.dbfOpenDataFileVar ;
 
 Procedure TxBase.dbfCloseDataFileVar ;
   Begin  { TxBase.dbfCloseDataFileVar }
-Exit ;  
     With dbfDataArea do
-      Try
-        dbfFileVar.Free ;
-//        dbfFileVar := nil ;
+      Begin
+        If dbfOpened then
+          Try
+            dbfFileVar.Free ;
+          Except
+            ShowErrorMessage('Error closing data file.') ;
+          End ;
 
 //        dbfOpened := False ;
-      Except
-        // ShowErrorMessage('Error closing data file.') ;
       End ;
   End ;  { TxBase.dbfCloseDataFileVar }
 
