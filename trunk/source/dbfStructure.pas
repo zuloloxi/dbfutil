@@ -8572,11 +8572,11 @@ Function TxBase.AppendMemo(pMemoBuffer : Pointer ;
     amTestArray = Array[1..MaxMemoSize] of Char ;
 
   Var
-    amI          : Integer             ;
-    amMemoOffset : Integer             ;
-    amTestBuffer : amTestArrayPtr      ;
-    amBytesRead  : Word                ;
-    amTwoChar    : Array[0..1] of Char ;
+    amI          : Integer        ;
+    amTwoChar    : String[2]      ;
+    amMemoOffset : Integer        ;
+    amTestBuffer : amTestArrayPtr ;
+    amBytesRead  : Word           ;
   {$ENDIF}
 
   Begin  { TxBase.AppendMemo }
