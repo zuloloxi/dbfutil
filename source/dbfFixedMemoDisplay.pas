@@ -189,7 +189,7 @@ Procedure TfrmFixedMemo.FormActivate(Sender : TObject) ;
         With MemoListBox Do
           Begin
             Clear ;
-            Items.Assign(GetMemoFieldsPtr^) ;
+            Items.Assign(GetMemoFieldsPtr^.Strings) ;
           End ;
 
         If bFixedShow then

@@ -1,21 +1,23 @@
 [Closed Files]
-File_0=TSourceModule,'G:\_Includes\General.inc',0,1,1,1,1,0,0,,
-File_1=TSourceModule,'G:\dbfUtil\source\dbfInclude.inc',0,1,1,11,5,0,0,,
-File_2=TSourceModule,'c:\program files\codegear\rad studio\5.0\SOURCE\WIN32\RTL\SYS\system.pas',0,1,9938,1,9950,0,0,,
-File_3=TSourceModule,'c:\program files\codegear\rad studio\5.0\SOURCE\WIN32\RTL\SYS\SysUtils.pas',0,1,11761,1,11773,0,0,,
-File_4=TSourceModule,'G:\DFS\source\MRUFList.pas',0,1,1118,1,1130,0,0,,
-File_5=TSourceModule,'G:\jvcl\run\JvThread.pas',0,1,241,1,181,0,0,,
-File_6=TSourceModule,'G:\Units\source\bcFlushDrive.pas',0,1,321,33,336,0,0,,
+File_0=TSourceModule,'g:\components\source\bcViewMem.pas',0,1,350,1,362,0,0,,
+File_1=TSourceModule,'G:\dbfUtil\source\dbfMemoFileDisplay.pas',0,1,72,1,84,0,0,,
+File_2=TSourceModule,'c:\program files\codegear\rad studio\5.0\source\Win32\rtl\common\Classes.pas',0,1,3717,1,3729,0,0,,
+File_3=TSourceModule,'c:\program files\codegear\rad studio\5.0\SOURCE\WIN32\VCL\Forms.pas',0,1,5338,1,5350,0,0,,
+File_4=TSourceModule,'G:\dbfUtil\source\dbfBadFieldView.pas',0,1,121,41,133,0,0,,
+File_5=TSourceModule,'G:\dbfUtil\source\dbfBMPMemoDisplay.pas',0,1,92,21,104,0,0,,
+File_6=TSourceModule,'G:\_Includes\General.inc',0,1,1,1,1,0,0,,
+File_7=TSourceModule,'G:\dbfUtil\source\dbfInclude.inc',0,1,1,11,5,0,0,,
+File_8=TSourceModule,'c:\program files\codegear\rad studio\5.0\SOURCE\WIN32\RTL\SYS\system.pas',0,1,9938,1,9950,0,0,,
 
 [Modules]
-Module0=c:\program files\codegear\rad studio\5.0\source\Win32\rtl\common\Classes.pas
+Module0=G:\dbfUtil\source\dbfStructure.pas
 Module1=G:\dbfUtil\source\dbfMain.pas
-Module2=G:\dbfUtil\source\dbfStructure.pas
+Module2=G:\dbfUtil\source\dbfFixedMemoDisplay.pas
 Module3=default.htm
 Count=4
 EditWindowCount=1
 
-[c:\program files\codegear\rad studio\5.0\source\Win32\rtl\common\Classes.pas]
+[G:\dbfUtil\source\dbfStructure.pas]
 ModuleType=TSourceModule
 FormState=0
 FormOnTop=0
@@ -25,7 +27,7 @@ ModuleType=TSourceModule
 FormState=1
 FormOnTop=1
 
-[G:\dbfUtil\source\dbfStructure.pas]
+[G:\dbfUtil\source\dbfFixedMemoDisplay.pas]
 ModuleType=TSourceModule
 FormState=0
 FormOnTop=0
@@ -35,7 +37,7 @@ ModuleType=TURLModule
 
 [EditWindow0]
 ViewCount=4
-CurrentEditView=c:\program files\codegear\rad studio\5.0\source\Win32\rtl\common\Classes.pas
+CurrentEditView=G:\dbfUtil\source\dbfStructure.pas
 View0=0
 View1=1
 View2=2
@@ -75,9 +77,9 @@ WelcomePageURL=bds:/default.htm
 [View1]
 CustomEditViewType=TEditView
 Module=G:\dbfUtil\source\dbfMain.pas
-CursorX=65
-CursorY=308
-TopLine=298
+CursorX=1
+CursorY=723
+TopLine=717
 LeftCol=1
 Elisions=
 Bookmarks=
@@ -85,25 +87,25 @@ EditViewName=G:\dbfUtil\source\dbfMain.pas
 
 [View2]
 CustomEditViewType=TEditView
+Module=G:\dbfUtil\source\dbfFixedMemoDisplay.pas
+CursorX=1
+CursorY=292
+TopLine=280
+LeftCol=1
+Elisions=
+Bookmarks=
+EditViewName=G:\dbfUtil\source\dbfFixedMemoDisplay.pas
+
+[View3]
+CustomEditViewType=TEditView
 Module=G:\dbfUtil\source\dbfStructure.pas
 CursorX=1
-CursorY=6581
-TopLine=6569
+CursorY=6768
+TopLine=6812
 LeftCol=1
 Elisions=
 Bookmarks=
 EditViewName=G:\dbfUtil\source\dbfStructure.pas
-
-[View3]
-CustomEditViewType=TEditView
-Module=c:\program files\codegear\rad studio\5.0\source\Win32\rtl\common\Classes.pas
-CursorX=1
-CursorY=5486
-TopLine=5474
-LeftCol=1
-Elisions=
-Bookmarks=
-EditViewName=c:\program files\codegear\rad studio\5.0\source\Win32\rtl\common\Classes.pas
 
 [Watches]
 Count=0
@@ -130,7 +132,9 @@ Dockable=1
 StayOnTop=0
 
 [Breakpoints]
-Count=0
+Count=2
+Breakpoint0='G:\dbfUtil\source\dbfMemoFileDisplay.pas',104,'',0,1,'',1,0,0,'',1,'','','',0
+Breakpoint1='G:\dbfUtil\source\dbfFixedMemoDisplay.pas',221,'',0,1,'',1,0,0,'',1,'','','',0
 
 [AddressBreakpoints]
 Count=0
@@ -147,11 +151,11 @@ Width=10000
 Height=1068
 MaxLeft=-39
 MaxTop=-54
-MaxWidth=10000
-MaxHeight=1068
+MaxWidth=10078
+MaxHeight=1770
 ClientWidth=10000
-ClientHeight=703
-BottomPanelSize=0
+ClientHeight=1405
+BottomPanelSize=677
 
 [ProjectManager]
 PercentageSizes=1
@@ -418,7 +422,7 @@ SplitPos=73
 
 [PropInspDesignerSelection]
 ArrangeBy=Name
-SelectedItem=Action,
+SelectedItem=,
 ExpandedItems=Anchors=0,BorderIcons=0,Constraints=0,Font=0,GlassFrame=0,HorzScrollBar=0
 
 [ModelViewTool]
@@ -661,7 +665,7 @@ Dockable=1
 StayOnTop=0
 TabPosition=1
 ActiveTabID=RefactoringForm
-TabDockClients=RefactoringForm,FindReferencsForm,RefactoringsView,UsagesView,QAView,MetricsView
+TabDockClients=RefactoringForm,FindReferencsForm,QAView,MetricsView,RefactoringsView,UsagesView
 
 [DockSite1]
 DockSiteType=1
@@ -684,5 +688,5 @@ Dockable=1
 StayOnTop=0
 TabPosition=1
 ActiveTabID=ProjectManager
-TabDockClients=ProjectManager,ModelViewTool,DataExplorer
+TabDockClients=ProjectManager,DataExplorer,ModelViewTool
 

@@ -80,13 +80,9 @@ Constructor TfrmMemoFileDisplay.Create(aOwner : TComponent ;
 ***********************************************************************}
 
 Procedure TfrmMemoFileDisplay.FormShow(Sender: TObject);
-  Var
-    cMemoFileName : String ;
-
   Begin  { TfrmMemoFileDisplay.FormShow }
-    cMemoFileName := xdbfPtr^.GetMemoFileName ;
-    heMemo.LoadFromFile(cMemoFileName) ;
-    xdbfPtr^.dbfCloseMemoFileVar ;
+    xdbfPtr^.GetMemoFileVar^.SeekToStart ;
+    heMemo.LoadFromStream(xdbfPtr^.GetMemoFileVar^) ;
   End ;  { TfrmMemoFileDisplay.FormShow }
 
 
@@ -104,10 +100,10 @@ Procedure TfrmMemoFileDisplay.FormClose(    Sender : TObject      ;
   Begin  { TfrmMemoFileDisplay.FormClose }
     If heMemo.Modified then
       Begin
-        heMemo.SaveToFile(xdbfPtr^.GetMemoFileName) ;
+        // heMemo.SaveToFile(xdbfPtr^.GetMemoFileName) ;
+        xdbfPtr^.GetMemoFileVar^.SeekToStart ;
+        heMemo.SaveToStream(xdbfPtr^.GetMemoFileVar^) ;
       End ;
-
-    xdbfPtr^.dbfOpenMemoFile ;
   End ;  { TfrmMemoFileDisplay.FormClose }
 
 End.

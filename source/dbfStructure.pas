@@ -475,9 +475,6 @@ Type
     Record
       dbfUserIndex : Integer ;
 
-      dbfOpened     : Boolean ;
-      dbfMemoOpened : Boolean ;
-
       dbfFileName     : TFileName ;
       dbfMemoFileName : TFileName ;
 
@@ -485,6 +482,9 @@ Type
 
       dbfFileVar     : TFileStreamX ;
       dbfMemoFileVar : TFileStreamX ;
+
+      dbfOpened     : Boolean ;
+      dbfMemoOpened : Boolean ;
 
       dbfMemoFormat   : dbfMemoType ;
       dbfMemoFileExt  : String[3]   ;
@@ -1408,7 +1408,7 @@ Function TxBase.GetMemoFileExtension : String ;
 
 Procedure TxBase.SetMemoFileExtension ;
   Begin  { TxBase.SetMemoFileExtension }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
      dbfMemoFileExt := GetMemoFileExtension ;
   End ;  { TxBase.SetMemoFileExtension }
 
@@ -1727,7 +1727,7 @@ Procedure TxBase.Init ;
 
     ZapStructures ;
 
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Begin
         dbfOpened := False ;
 
@@ -1814,7 +1814,7 @@ Destructor TxBase.Destroy ;
   Begin  { TxBase.Destroy }
     CloseFiles ;
 
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Begin
         Try
           FreeAndNil(dbfGoodRecList)     ;
@@ -1852,7 +1852,8 @@ Destructor TxBase.Destroy ;
 
     Inherited Destroy ;
   End ;  { TxBase.Destroy }
-{.PA}
+
+
 {***********************************************************************
 *                                                                      *
 *       TxBase.GetDataAreaPtr                                          *
@@ -2038,7 +2039,7 @@ Function TxBase.VerifyField(pRec   : Pointer ;
 
     Result := False ;
 
-    With GetDataAreaPtr^ , GetHeaderPtr^ do
+    With dbfDataArea , GetHeaderPtr^ do
       Try
         cType        := GetFieldType(nField) ;
         vfFldIndex   := GetFieldIdxType(nField) ;
@@ -2178,7 +2179,7 @@ Function TxBase.VerifyField(pRec   : Pointer ;
                          'TxBase.VerifyField'#13#10'Error message ' + e.Message);
             Result := False ;
           End ;
-      End ;  { With GetDataAreaPtr^ , dbfHeader do }
+      End ;  { With dbfDataArea , dbfHeader do }
   End ;  { TxBase.VerifyField }
 
 
@@ -2194,7 +2195,7 @@ Function TxBase.VerifyField(pRec   : Pointer ;
 Function TxBase.CheckVerifyField(pRec   : Pointer ;
                                  nField : Integer  ) : Boolean ;
   Begin  { TxBase.CheckVerifyField }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Try
         If CheckFieldRead(nField) then
           Begin
@@ -2251,7 +2252,7 @@ Function TxBase.CheckVerifyFieldChar(pRec   : Pointer ;
 
 Function TxBase.GetVerifyFieldChar : Char ;
   Begin  { TxBase.GetVerifyFieldChar }
-    Result := GetDataAreaPtr^.dbfVerifyFieldChar ;
+    Result := dbfDataArea.dbfVerifyFieldChar ;
   End ;  { TxBase.GetVerifyFieldChar }
 
 
@@ -2275,7 +2276,7 @@ Function TxBase.VerifyRecord(pRec : Pointer) : Boolean ;
   Begin  { TxBase.VerifyRecord }
     Result := True ;
 
-    With GetDataAreaPtr^ , GetHeaderPtr^ do
+    With dbfDataArea , GetHeaderPtr^ do
       Begin
         FillChar(bBadFieldRec , SizeOf(bBadFieldRec) , Byte(False)) ;
 
@@ -2353,7 +2354,7 @@ Procedure TxBase.VerifyFile(pProc    : ProcType ;
       Try
         ZapCounts ;
 
-        With GetDataAreaPtr^ do
+        With dbfDataArea do
           Begin
             dbfGoodRecList.Clear ;
             dbfBadRecList.Clear  ;
@@ -2450,7 +2451,7 @@ Procedure TxBase.dbfCalcFieldCount ;
     cfcFieldCount : Integer ;
 
   Begin  { TxBase.dbfCalcFieldCount }
-    With GetDataAreaPtr^ , GetHeaderPtr^ do
+    With dbfDataArea , GetHeaderPtr^ do
       Begin
         { Need check to stop loop if no terminator byte (#13) exists. }
         cfcFieldCount := ((GetHeaderSize - 1) div SizeOf(dbfFieldDescType)) - 1 ;
@@ -2495,7 +2496,7 @@ Procedure TxBase.dbfCalcFieldOffsets ;
   Begin  { TxBase.dbCalcFieldOffsets }
     nOffset := 0 ;
 
-    With GetDataAreaPtr^ , GetHeaderPtr^ do
+    With dbfDataArea , GetHeaderPtr^ do
       Begin
         FillChar(dbfFieldOffset , SizeOf(dbfFieldOffset) , 0) ;
 
@@ -2525,7 +2526,7 @@ Procedure TxBase.dbfCalcFieldOffsets ;
 
 Procedure TxBase.dbfCalcRecordOffset ;
   Begin  { TxBase.dbfCalcRecordOffset }
-    GetDataAreaPtr^.dbfDataRecordOffset := CalcRecordOffset(GetRecordNo) ;
+    dbfDataArea.dbfDataRecordOffset := CalcRecordOffset(GetRecordNo) ;
   End ;  { TxBase.dbfCalcRecordOffset }
 
 
@@ -2573,7 +2574,7 @@ Function TxBase.GetFieldRecordOffset(nRecord : Integer ;
 
 Function TxBase.dbGetRecordOffset : Integer ;
   Begin  { TxBase.dbGetRecordOffset }
-    Result := GetDataAreaPtr^.dbfDataRecordOffset ;
+    Result := dbfDataArea.dbfDataRecordOffset ;
   End ;  { TxBase.dbGetRecordOffset }
 
   
@@ -2677,7 +2678,7 @@ Function TxBase.GetFieldIgnore(nField : Integer) : Boolean ;
   Begin  { TxBase.GetFieldIgnore }
     dbfCheckDataAreaPtr ;
 
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Try
         Result := dbfIgnoreField[nField] ;
       Except
@@ -2700,7 +2701,7 @@ Procedure TxBase.SetFieldIgnore(nField : Integer ;
   Begin  { TxBase.SetFieldIgnore }
     dbfCheckDataAreaPtr ;
 
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Try
         dbfIgnoreField[nField] := bIgnore ;
       Except
@@ -3034,7 +3035,7 @@ Procedure TxBase.dbfCalcAllFieldTypes ;
   Begin  { TxBase.dbfCalcAllFieldTypes }
     cFldTypes := '' ;
 
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Begin
         dbfAllFieldTypes := Spaces(Length(AllFields)) ;
 
@@ -3067,7 +3068,7 @@ Procedure TxBase.dbfCalcAllFieldTypes ;
 
 Function TxBase.GetAllFieldTypes : String ;
   Begin  { TxBase.GetAllFieldTypes }
-    Result := GetDataAreaPtr^.dbfAllFieldTypes ;
+    Result := dbfDataArea.dbfAllFieldTypes ;
   End ;  { TxBase.GetAllFieldTypes }
 
 
@@ -3100,7 +3101,7 @@ Function TxBase.HasFieldType(cType : Char) : Boolean ;
 
 Function TxBase.GetNoFieldTypes : Integer ;
   Begin  { TxBase.GetNoFieldTypes }
-    Result := Length(GetDataAreaPtr^.dbfAllFieldTypes) ;
+    Result := Length(dbfDataArea.dbfAllFieldTypes) ;
   End ;  { TxBase.GetNoFieldTypes }
 
 
@@ -3181,7 +3182,7 @@ Function TxBase.GetFieldWidth(nField : Integer) : Integer ;
 
 Function TxBase.GetNameMaxWidth : Integer ;
   Begin  { TxBase.GetNameMaxWidth }
-    Result := GetDataAreaPtr^.dbfNameMaxWidth ;
+    Result := dbfDataArea.dbfNameMaxWidth ;
   End ;  { TxBase.GetNameMaxWidth }
 
 
@@ -3199,7 +3200,7 @@ Function TxBase.GetNameMaxWidth : Integer ;
 
 Procedure TxBase.SetNameMaxWidth(nLen : Integer) ;
   Begin  { TxBase.SetNameMaxWidth }
-    GetDataAreaPtr^.dbfNameMaxWidth := nLen ;
+    dbfDataArea.dbfNameMaxWidth := nLen ;
   End ;  { TxBase.SetNameMaxWidth }
 
 
@@ -3217,7 +3218,7 @@ Procedure TxBase.SetNameMaxWidth(nLen : Integer) ;
 
 Function TxBase.GetNameMaxWidthFld : Integer ;
   Begin  { TxBase.GetNameMaxWidth }
-    Result := GetDataAreaPtr^.dbfNameMaxWidthFld ;
+    Result := dbfDataArea.dbfNameMaxWidthFld ;
   End ;  { TxBase.GetNameMaxWidth }
 
 
@@ -3235,7 +3236,7 @@ Function TxBase.GetNameMaxWidthFld : Integer ;
 
 Function TxBase.GetFieldMaxWidth : Integer ;
   Begin  { TxBase.GetFieldMaxWidth }
-    Result := GetDataAreaPtr^.dbfFieldMaxWidth ;
+    Result := dbfDataArea.dbfFieldMaxWidth ;
   End ;  { TxBase.GetFieldMaxWidth }
 
 
@@ -3597,7 +3598,7 @@ Function TxBase.GetFieldOffset(nField : Integer) : Integer ;
     If nField = 0 then
       Result := 0
     Else
-      Result := GetDataAreaPtr^.dbfFieldOffset[nField] ;
+      Result := dbfDataArea.dbfFieldOffset[nField] ;
   End ;  { TxBase.GetFieldOffset }
 
 
@@ -3706,7 +3707,7 @@ Function TxBase.CheckFieldRead(nField : Integer) : Boolean ;
 
 Function TxBase.GetFieldOfs(cFldName : String) : Integer ;
   Begin  { TxBase.GetFieldOfs }
-    Result := GetDataAreaPtr^.dbfFieldOffset[GetFieldNo(cFldName)] ;
+    Result := dbfDataArea.dbfFieldOffset[GetFieldNo(cFldName)] ;
   End ;  { TxBase.GetFieldOfs }
 
 
@@ -3794,7 +3795,7 @@ Function TxBase.GetBufferFieldStr(pRec   : Pointer ;
 
 Function TxBase.GetRecordNo : Integer ;
   Begin  { TxBase.GetRecordNo }
-    Result := GetDataAreaPtr^.dbfCurrentRecord ;
+    Result := dbfDataArea.dbfCurrentRecord ;
   End ;  { TxBase.GetRecordNo }
 
 
@@ -3811,7 +3812,7 @@ Function TxBase.GetRecordNo : Integer ;
 
 Procedure TxBase.SetRecordNo(nRecNo : Integer) ;
   Begin  { TxBase.SetRecordNo }
-    GetDataAreaPtr^.dbfCurrentRecord := nRecNo ;
+    dbfDataArea.dbfCurrentRecord := nRecNo ;
   End ;  { TxBase.SetRecordNo }
 {.PA}
 {***********************************************************************
@@ -3863,7 +3864,7 @@ Function TxBase.SetRecordSize(S : Word) : Word ;
 
 Function TxBase.GetRecordPtr : Pointer ;
   Begin  { TxBase.GetRecordPtr }
-    Result := GetDataAreaPtr^.dbfCurrentRecordPtr ;
+    Result := dbfDataArea.dbfCurrentRecordPtr ;
   End ;  { TxBase.GetRecordPtr }
 
 
@@ -3880,7 +3881,7 @@ Function TxBase.GetRecordPtr : Pointer ;
 
 Procedure TxBase.SetRecordPtr(pRecPtr : Pointer) ;
   Begin  { TxBase.SetRecordPtr }
-    GetDataAreaPtr^.dbfCurrentRecordPtr := pRecPtr ;
+    dbfDataArea.dbfCurrentRecordPtr := pRecPtr ;
   End ;  { TxBase.SetRecordPtr }
 
 
@@ -3899,7 +3900,7 @@ Function TxBase.SetCurrentRecord(nRecNo : Integer) : Boolean ;
   Begin  { TxBase.SetCurrentRecord }
     Result := False ;
 
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Begin
         { No negative record numbers or a number greater than }
         { the total number of records.                        }
@@ -3987,7 +3988,7 @@ Function TxBase.GetRecord(nRecNo : Integer) : Boolean ;
     Result := True ;
 
     { If a physical record number is out of range, exit with error. }
-    With GetDataAreaPtr^ , GetHeaderPtr^ , dbfReadMulti do
+    With dbfDataArea , GetHeaderPtr^ , dbfReadMulti do
       Begin
         SetRecordNo(nRecNo) ;
 
@@ -4051,7 +4052,7 @@ Function TxBase.GetRecord(nRecNo : Integer) : Boolean ;
 
 Function TxBase.GetRecordBytesRead : Integer ;
   Begin  { TxBase.GetRecordBytesRead }
-    Result := GetDataAreaPtr^.dbfRecordBytesRead ;
+    Result := dbfDataArea.dbfRecordBytesRead ;
   End ;  { TxBase.GetRecordBytesRead }
 
 
@@ -4066,7 +4067,7 @@ Function TxBase.GetRecordBytesRead : Integer ;
 
 Procedure TxBase.SetRecordBytesRead(nSize : Integer) ;
   Begin  { TxBase.SetRecordBytesRead }
-    GetDataAreaPtr^.dbfRecordBytesRead := nSize ;
+    dbfDataArea.dbfRecordBytesRead := nSize ;
   End ;  { TxBase.SetRecordBytesRead }
 
 
@@ -4110,7 +4111,7 @@ Function TxBase.GetMultiRecord(nFirstRec : Integer) : Boolean ;
     Result := False ;
 
     { If a physical record number is out of range, exit with error. }
-    With GetDataAreaPtr^ , GetHeaderPtr^ do
+    With dbfDataArea , GetHeaderPtr^ do
       Begin
         { Set up the mult-record read buffer if necessary. }
         If dbfReadMulti.dbfMultiRecordPtr = nil then
@@ -4180,7 +4181,7 @@ Function TxBase.GetMultiRecord(nFirstRec : Integer) : Boolean ;
 
 Procedure TxBase.dbfSetUpMultiRecord(Var rMulti : dbfMultiType) ;
   Begin  { TxBase.dbfSetUpMultiRecord }
-    With GetDataAreaPtr^ , GetHeaderPtr^ , rMulti do
+    With dbfDataArea , GetHeaderPtr^ , rMulti do
       Begin
         If dbfMultiRecordPtr = nil then
           Begin
@@ -4219,7 +4220,7 @@ Function TxBase.PutMultiRecord(nFirstRec : Integer) : Boolean ;
     Result := False ;
 
     { If a physical record number is out of range, exit with error. }
-    With GetDataAreaPtr^ , GetHeaderPtr^ do
+    With dbfDataArea , GetHeaderPtr^ do
       Begin
         { Set up the mult-record write buffer if necessary. }
         If dbfWriteMulti.dbfMultiRecordPtr = nil then
@@ -4233,7 +4234,7 @@ Function TxBase.PutMultiRecord(nFirstRec : Integer) : Boolean ;
 
         dbfFileVar.SeekToPos(dbfDataRecordOffset) ;
 
-        With GetDataAreaPtr^ , dbfWriteMulti do
+        With dbfDataArea , dbfWriteMulti do
           Begin
             nBytesWritten := dbfFileVar.Write(dbfMultiRecordPtr^ , dbfMultiBufferSize) ;
 
@@ -4277,7 +4278,7 @@ Function TxBase.AddMultiRecord(    pRec   : Pointer ;
     nOffPtr : Pointer ;
 
   Begin  { TxBase.AddMultiRecord }
-    With GetDataAreaPtr^ , GetHeaderPtr^ , dbfWriteMulti do
+    With dbfDataArea , GetHeaderPtr^ , dbfWriteMulti do
       Begin
         If dbfWriteMulti.dbfMultiRecordPtr = nil then
           dbfSetUpMultiRecord(dbfWriteMulti) ;
@@ -4323,14 +4324,14 @@ Function TxBase.AddMultiRecordBuffer : Boolean ;
     Result := False ;
 
     { If a physical record number is out of range, exit with error. }
-    With GetDataAreaPtr^ , GetHeaderPtr^ , dbfWriteMulti do
+    With dbfDataArea , GetHeaderPtr^ , dbfWriteMulti do
       If dbfMultiRecordCnt > 0 then
         Begin
           GetDataFileVar^.SeekToPos(CalcFileSize) ;
 
           nBufferSize := dbfMultiRecordCnt * GetRecordSize ;
 
-          With GetDataAreaPtr^ , dbfWriteMulti do
+          With dbfDataArea , dbfWriteMulti do
             Begin
               nBytesWritten := GetDataFileVar^.Write(dbfMultiRecordPtr^ , nBufferSize) ;
 
@@ -4365,7 +4366,7 @@ Function TxBase.AddMultiRecordBuffer : Boolean ;
 
 Function TxBase.IsMultiWriteBufferFull : Boolean ;
   Begin  { TxBase.IsMultiWriteBufferFull }
-    With GetDataAreaPtr^ , dbfWriteMulti do
+    With dbfDataArea , dbfWriteMulti do
       Result := (dbfMultiRecordCnt >= dbfMultiMaxRecords) ;
   End ;  { TxBase.IsMultiWriteBufferFull }
 
@@ -4384,7 +4385,7 @@ Function TxBase.IsMultiWriteBufferFull : Boolean ;
 
 Function TxBase.DeleteRecord(nRecNo : Integer) : Boolean ;
   Begin  { TxBase.DeleteRecord }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       If GetRecord(nRecNo) then
         Begin
           Char(dbfCurrentRecordPtr^) := '*' ;
@@ -4441,7 +4442,7 @@ Function TxBase.PutRecordPtr(pRec   : Pointer ;
   Begin  { TxBase.PutRecordPtr }
     Result := False ;
 
-    With GetDataAreaPtr^ , GetHeaderPtr^ do
+    With dbfDataArea , GetHeaderPtr^ do
       Begin
         dbfIO := 0 ;
 
@@ -4563,7 +4564,7 @@ Function TxBase.AddRecord(    pRec   : Pointer ;
   Begin  { TxBase.AddRecord }
     Result := False ;
 
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Begin
         GetDataFileVar^.SeekToPos(CalcFileSize) ;
 
@@ -4734,7 +4735,7 @@ Function TxBase.GetFieldStr(pRec   : Pointer ;
         Else
           cStr := MakeStr(pFldRec , nWidth) ;
 
-        With GetDataAreaPtr^ do
+        With dbfDataArea do
           Begin
             Case cType of
               'L' : If cStr[1] in dbfValidLogicalTrue then
@@ -5258,7 +5259,7 @@ Function TxBase.GetFieldFloat(    pRec   : Pointer ;
 
 Function TxBase.DisplayFldStr : String ;
   Begin  { TxBase.DisplayFldStr }
-    Result := GetDataAreaPtr^.dbfFieldToDisplay ;
+    Result := dbfDataArea.dbfFieldToDisplay ;
   End ;  { TxBase.DisplayFldStr }
 
 
@@ -5273,7 +5274,7 @@ Function TxBase.DisplayFldStr : String ;
 
 Function TxBase.GetFieldChoice : Integer ;
   Begin  { TxBase.GetFieldChoice }
-    Result := GetDataAreaPtr^.dbfFieldChoice ;
+    Result := dbfDataArea.dbfFieldChoice ;
   End ;  { TxBase.GetFieldChoice }
 
 
@@ -5288,7 +5289,7 @@ Function TxBase.GetFieldChoice : Integer ;
 
 Procedure TxBase.SetFieldChoice(nField : Integer) ;
   Begin  { TxBase.SetFieldChoice }
-    GetDataAreaPtr^.dbfFieldChoice := nField ;
+    dbfDataArea.dbfFieldChoice := nField ;
   End ;  { TxBase.SetFieldChoice }
 
 
@@ -5330,10 +5331,10 @@ Procedure TxBase.Duplicate(DB    : pTxBase ;
     DB^.Init ;
     { Move only the needed file header information. }
     nSize := dbfCorrectedHeaderSize ;
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Move(GetHeaderPtr^ , DB^.GetHeaderPtr^ , nSize) ;
 
-    With DB^ , GetDataAreaPtr^ , GetHeaderPtr^ do
+    With DB^ , dbfDataArea , GetHeaderPtr^ do
       Begin
         dbfConvertHeader ;  { Convert the header information. }
 
@@ -5357,7 +5358,7 @@ Procedure TxBase.Duplicate(DB    : pTxBase ;
           End ;
       End ;
 
-    With DB^ , GetDataAreaPtr^ do
+    With DB^ , dbfDataArea do
       Begin
         dbfAllocateInternalRecord ;
 
@@ -5389,7 +5390,7 @@ Procedure TxBase.Duplicate(DB    : pTxBase ;
 
 Function TxBase.GetDataFileName : TFileName ;
   Begin  { TxBase.GetDataFileName }
-    Result := GetDataAreaPtr^.dbfFileName ;
+    Result := dbfDataArea.dbfFileName ;
   End ;  { TxBase.GetDataFileName }
 
 
@@ -5442,7 +5443,7 @@ Function TxBase.GetBackLinkStr : String ;
 
 Function TxBase.GetShortDataFileName : TFileName ;
   Begin  { TxBase.GetShortDataFileName }
-    Result := GetDataAreaPtr^.dbfShortDataFileName ;
+    Result := dbfDataArea.dbfShortDataFileName ;
   End ;  { TxBase.GetShortDataFileName }
 
 
@@ -5463,7 +5464,7 @@ Procedure TxBase.SetFileName(Const cFileName : TFileName) ;
     cFile := cFileName ;
 // ShowMessage(cFile) ;
 
-    GetDataAreaPtr^.dbfFileName := cFileName ;
+    dbfDataArea.dbfFileName := cFileName ;
     Try
 ResetShortFileName ;  // BKC Test - commented out
     Except
@@ -5485,7 +5486,7 @@ ResetShortFileName ;  // BKC Test - commented out
 
 Function TxBase.GetDataFilePtr : pTFileStreamX ;
   Begin  { TxBase.GetDataFilePtr }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Result := @dbfFileVar ;
   End ;  { TxBase.GetDataFilePtr }
 
@@ -5501,7 +5502,7 @@ Function TxBase.GetDataFilePtr : pTFileStreamX ;
 
 Function TxBase.GetMemoFilePtr : pTFileStreamX ;
   Begin  { TxBase.GetMemoFilePtr }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Result := @dbfMemoFileVar ;
   End ;  { TxBase.GetMemoFilePtr }
 
@@ -5663,7 +5664,8 @@ Function TxBase.dbfCreateMemoFile(MName : String) : Boolean ;
          Raise Exception.Create('Invalid memo block type TxBase.dbfCreateMemoFile') ;
        End ;
 
-     With GetDataAreaPtr^ , GetHeaderPtr^ do
+     // With dbfDataArea , GetHeaderPtr^ do
+     With dbfDataArea do
        Begin
          dbfMemoOpened := False ;
 
@@ -5682,7 +5684,8 @@ Function TxBase.dbfCreateMemoFile(MName : String) : Boolean ;
                End ;
 
              Try
-               dbfMemoFileVar := TFileStreamX.Create(dbfMemoFileName, fmCreate);
+               dbfMemoFileVar := TFileStreamX.Create(dbfMemoFileName ,
+                                                     fmCreate         ) ;
                dbfMemoOpened := True ;
              Except
                Begin
@@ -5743,7 +5746,7 @@ Function TxBase.WriteHeader : Boolean ;
   Begin  { TxBase.WriteHeader }
     SetHeaderSize(GetHeaderSize) ;
     
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Begin
         SetLastUpdateToday ;
 
@@ -5782,7 +5785,7 @@ Function TxBase.ReadHeader : Boolean ;
 //    nBytesRead : Integer ;
 
   Begin  { TxBase.ReadHeader }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Begin
         Try
           dbfFileVar.SeekToStart ;
@@ -5960,7 +5963,7 @@ Function TxBase.GetLastUpdate(bShowError : Boolean) : TDateTime ;
     nDay   : Word ;
 
   Begin  { TxBase.GetLastUpdate }
-    With GetDataAreaPtr^ , GetFixedHeaderPtr^ do
+    With dbfDataArea , GetFixedHeaderPtr^ do
       Begin
         nYear  := LastUpdate.Year  ;
         nMonth := LastUpdate.Month ;
@@ -6012,7 +6015,7 @@ Procedure TxBase.SetLastUpdate(sluDate : TDateTime) ;
     sluDay , sluMonth , sluYear : Word ;
 
   Begin  { SetLastUpdate }
-    With GetDataAreaPtr^ , GetFixedHeaderPtr^ do
+    With dbfDataArea , GetFixedHeaderPtr^ do
       Begin
         dbfLastUpdate := sluDate ;
         DecodeDate(dbfLastUpdate , sluYear , sluMonth , sluDay) ;
@@ -6427,7 +6430,7 @@ Procedure TxBase.IncTotalRecords(nRecs : Integer) ;
 
 Function TxBase.GetDataFileVar : pTFileStreamX ;
   Begin  { TxBase.GetDataFileVar }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Result := @dbfFileVar ;
   End ;  { TxBase.GetDataFileVar }
 
@@ -6445,7 +6448,7 @@ Function TxBase.GetDataFileVar : pTFileStreamX ;
 
 Function TxBase.GetMemoFileVar : pTFileStreamX ;
   Begin  { TxBase.GetMemoFileVar }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Result := @dbfMemoFileVar ;
   End ;  { TxBase.GetMemoFileVar }
 
@@ -6464,7 +6467,7 @@ Procedure TxBase.dbfInternalCalculations ;
     nField : Integer ;
 
   Begin  { TxBase.dbfInternalCalculations }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Begin
         FillChar(dbfNewFieldType  , SizeOf(dbfNewFieldType)  , 0) ;
         FillChar(dbfNewFieldWidth , SizeOf(dbfNewFieldWidth) , 0) ;
@@ -6495,7 +6498,7 @@ Function TxBase.ResetShortFileName : TFileName ;
     If bWasOpen then
       dbfCloseDataFileVar ;
   }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Begin
         dbfShortDataFileName := bcFileUtilities.ShortFileName(GetDataFileName) ;
         Result := dbfShortDataFileName ;
@@ -6519,7 +6522,7 @@ Function TxBase.ResetShortFileName : TFileName ;
 
 Procedure TxBase.dbfOpenDataFileVar ;
   Begin  { TxBase.dbfOpenDataFileVar }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Begin
         Try
           dbfFileVar := TFileStreamX.Create(dbfFileName , fmOpenReadWrite) ;
@@ -6577,8 +6580,9 @@ Procedure TxBase.dbfCloseMemoFileVar ;
       With dbfDataArea do
         If dbfMemoOpened then
           Try
+            // FreeAndNil(dbfMemoFileVar) ;
+            // dbfMemoOpened := False ;
             dbfMemoFileVar.Free ;
-//            dbfMemoOpened := False ;
           Except
             ErrorMsg('Error closing memo file.') ;
           End ;
@@ -6596,7 +6600,7 @@ Procedure TxBase.dbfCloseMemoFileVar ;
 
 Procedure TxBase.OpenCurrentFile ;
   Begin  { TxBase.OpenCurrentFile }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       If not dbfOpened then
         Begin
           If not bcFileUtilities.FileExists(dbfFileName) then
@@ -6667,7 +6671,7 @@ Procedure TxBase.OpenCurrentFile ;
 
 Function TxBase.dbfOpenMemoFile : Boolean ;
   Begin  { TxBase.dbfOpenMemoFile }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Begin
         If dbfMemoFile then
           Begin
@@ -6706,7 +6710,7 @@ Function TxBase.dbfOpenMemoFile : Boolean ;
 
 Procedure TxBase.dbfAllocateInternalRecord ;
   Begin  { TxBase.dbfAllocateInternalRecord }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       dbfCurrentRecordPtr := @dbfCurrRecordBuffer ;
   End ;  { TxBase.dbfAllocateInternalRecord }
 
@@ -6722,7 +6726,7 @@ Procedure TxBase.dbfAllocateInternalRecord ;
 
 Procedure TxBase.CreateCurrentFile ;
   Begin  { TxBase.CreateCurrentFile }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Try
         dbfFileVar := TFileStreamX.Create(dbfFileName , fmCreate) ;
         dbfOpened := True ;
@@ -6742,8 +6746,15 @@ Procedure TxBase.CreateCurrentFile ;
 ***********************************************************************}
 
 Procedure TxBase.CloseFiles ;
+  Procedure FreeMulti(Var oMulti : dbfMultiType) ; near ;
+    Begin
+      With oMulti do
+        If Assigned(dbfMultiRecordPtr) then
+          FreeMemCheck(dbfMultiRecordPtr , dbfMultiBufferSize) ;
+    End ;
+    
   Begin  { TxBase.CloseFiles }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Begin
         Try
           dbfCloseDataFileVar ;
@@ -6752,13 +6763,8 @@ Procedure TxBase.CloseFiles ;
           //
         End ;
 
-        With dbfReadMulti do
-          If dbfMultiRecordPtr = nil then
-            FreeMemCheck(dbfMultiRecordPtr , dbfMultiBufferSize) ;
-
-        With dbfWriteMulti do
-          If dbfMultiRecordPtr = nil then
-            FreeMemCheck(dbfMultiRecordPtr , dbfMultiBufferSize) ;
+        FreeMulti(dbfReadMulti ) ;
+        FreeMulti(dbfWriteMulti) ;
 
         dbfMemoOpened := False ;
         dbfOpened     := False ;
@@ -6779,7 +6785,7 @@ Procedure TxBase.CloseFiles ;
 
 Function TxBase.GetFieldCount : Integer ;
   Begin  { TxBase.GetFieldCount }
-    Result := GetDataAreaPtr^.dbfFieldCount ;
+    Result := dbfDataArea.dbfFieldCount ;
   End ;  { TxBase.GetFieldCount }
 
 
@@ -6796,7 +6802,7 @@ Function TxBase.GetFieldCount : Integer ;
 
 Function TxBase.SetFieldCount(nFlds : Integer ) : Integer ;
   Begin  { TxBase.SetFieldCount }
-    GetDataAreaPtr^.dbfFieldCount := nFlds ;
+    dbfDataArea.dbfFieldCount := nFlds ;
     Result := nFlds ;
   End ;  { TxBase.SetFieldCount }
 
@@ -6903,7 +6909,7 @@ Procedure TxBase.dbfConvertHeader ;
   Begin  { TxBase.dbfConvertHeader }
     DateParInitialize ;
 
-    With GetDataAreaPtr^ , GetFixedHeaderPtr^ do
+    With dbfDataArea , GetFixedHeaderPtr^ do
       Begin
         dbfVersion  := Signature and $07 ;
         dbfSQLTable := ((Signature and $70) shr 4) > 0 ;
@@ -6950,7 +6956,7 @@ Procedure TxBase.dbfBuildMemoFldList ;
     nI : Integer ;
     
   Begin  { TxBase.dbfBuildMemoFldList }
-    With GetDataAreaPtr^ , GetHeaderPtr^ do
+    With dbfDataArea , GetHeaderPtr^ do
       Begin
         dbfMemoFldCount := 0 ;
         FillChar(dbfMemoFldList , SizeOf(dbfMemoFldList) , 0) ;
@@ -7021,7 +7027,7 @@ Procedure TxBase.ScanMemoFields ;
     cStr  : String  ;
 
   Begin  { TxBase.ScanMemoFields }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Begin
         If dbfMemoFldScanned then
           Exit
@@ -7094,7 +7100,7 @@ Procedure TxBase.ScanMemoFields ;
 
 Procedure TxBase.SetMemoFileName(F : String) ;
   Begin  { TxBase.SetMemoFileName }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Begin
         dbfMemoFileName := UpperTrim(F) ;
         dbfSetMemoFile ;
@@ -7205,7 +7211,7 @@ Function TxBase.WriteMemoHeader : Boolean ;
     cShort := JustName(cFile) ;
     cShort := JustName(GetShortDataFileName) ;
 
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Begin
         With GetMemoHeaderPtr^ do
           Begin
@@ -7249,7 +7255,7 @@ Function TxBase.ReadMemoHeader : Boolean ;
     nBytesToRead   : Integer ;
 
   Begin  { TxBase.ReadMemoHeader }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Begin
         { Make sure not to read more header bytes than the }
         { actual memo file size.                           }
@@ -7313,7 +7319,7 @@ Function TxBase.ReadMemo(nMemoNo  : Integer ;
         dbfFPTMemo : Result := ReadMemoFPT(nMemoNo , nFieldNo) ;
         dbfDBTMemo :
           Begin
-            With GetDataAreaPtr^ do
+            With dbfDataArea do
               Begin
                 bFinished := False ;
                 nBlocks := 0 ;
@@ -7380,7 +7386,7 @@ Function TxBase.ReadMemoFPT(nMemoNo  : Integer ;
     nOffset      : Integer ;
 
   Begin  { TxBase.ReadMemoFPT }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Begin
         nOffset := nMemoNo * GetMemoBlockLen ;
         dbfMemoFileVar.SeekToPos(nOffset) ;
@@ -7433,7 +7439,7 @@ Function TxBase.ReadMemoDB4(nMemoNo  : Integer ;
     nMemoLen     : Integer ;
 
   Begin  { TxBase.ReadMemoDB4 }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Begin
         nOffset := nMemoNo * GetMemoBlockLen ;
         dbfMemoFileVar.SeekToPos(nOffset) ;
@@ -7478,7 +7484,7 @@ Function TxBase.ReadMemoHeaderDBV(nFieldNo : Integer) : Boolean ;
     nOffset      : Integer ;
 
   Begin  { TxBase.ReadMemoHeaderDBV }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Begin
         FillChar(dbfMemoDescDBV , SizeOf(dbfMemoDescDBV) , 0) ;
 
@@ -7526,7 +7532,7 @@ Function TxBase.ReadMemoDBV(nFieldNo : Integer) : Boolean ;
     nOffset      : Integer ;
 
   Begin  { TxBase.ReadMemoDBV }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Begin
         nOffset := GetMemoOffsetDBV(GetRecordPtr , nFieldNo) ;
 
@@ -7581,7 +7587,7 @@ Function TxBase.ReadMemoDBV(nFieldNo : Integer) : Boolean ;
 
 Function TxBase.GetMemoBytesRead : Integer ;
   Begin  { TxBase.GetMemoBytesRead }
-    Result := GetDataAreaPtr^.dbfMemoLength ;
+    Result := dbfDataArea.dbfMemoLength ;
   End ;  { TxBase.GetMemoBytesRead }
 
 
@@ -7596,7 +7602,7 @@ Function TxBase.GetMemoBytesRead : Integer ;
 
 Procedure TxBase.SetMemoBytesRead(nBytesRead : Integer) ;
   Begin  { TxBase.SetMemoBytesRead }
-    GetDataAreaPtr^.dbfMemoLength := nBytesRead ;
+    dbfDataArea.dbfMemoLength := nBytesRead ;
   End ;  { TxBase.SetMemoBytesRead }
 
 
@@ -7614,7 +7620,7 @@ Function TxBase.GetMemoDescriptor(nMemo : Integer) : Integer ;
 //    nBytesRead : Integer ;
 
   Begin  { TxBase.GetMemoDescriptor }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Begin
         SeekMemo(nMemo) ;
 
@@ -7647,7 +7653,7 @@ Function TxBase.GetOleMemoDescriptor(nMemo : Integer) : Integer ;
 //    nBytesRead : Integer ;
 
   Begin  { TxBase.GetOleMemoDescriptor }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Begin
         SeekMemo(nMemo) ;
 
@@ -7679,7 +7685,7 @@ Function TxBase.GetMemoLength : Integer ;
     nType : Integer ;
 
   Begin  { TxBase.GetMemoLength }
-    With GetDataAreaPtr^ , dbfMemoBMPDesc do
+    With dbfDataArea , dbfMemoBMPDesc do
       Begin
         nType := SwapInteger(dbfMemoBMPDesc.MemoType) ;
 
@@ -7708,7 +7714,7 @@ Function TxBase.SeekMemo(nMemo : Integer) : Boolean ;
     nPos : Int64 ;
 
   Begin  { TxBase.SeekMemo }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Try
         nPos := dbfMemoFileVar.SeekToPos(GetMemoOffset(nMemo)) ;
 
@@ -7748,7 +7754,7 @@ Function TxBase.GetOleOffset : Integer ;
 
 
   Begin  { TxBase.GetOleOffset }
-    With GetDataareaPtr^ , dbfMemoOleDesc do
+    With dbfDataArea , dbfMemoOleDesc do
       pPtr := @OleFoxPro ;
 
     pRec := pPtr ;
@@ -7793,7 +7799,7 @@ Function TxBase.GetOleLength : Integer ;
 
 
   Begin  { TxBase.GetOleLength }
-    With GetDataareaPtr^ , dbfMemoOleDesc do
+    With dbfDataArea , dbfMemoOleDesc do
       pPtr := @OleFoxPro ;
 
     cStr := MakeStr(pPtr , 4096) ;
@@ -7836,7 +7842,7 @@ Procedure TxBase.ReadMemoBMP(nMemoNo : Integer) ;
 
     cType := GetFieldType(GetFieldChoice) ;
 
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Begin
         If cType = 'G' then
           Begin
@@ -7949,7 +7955,7 @@ Function TxBase.ReadMemoObject(nMemoNo : Integer) : String ;
 
     nBytesRead := 0 ;
 
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Begin
         GetOleMemoDescriptor(nMemoNo) ;
 
@@ -8022,7 +8028,7 @@ Function TxBase.ReadMemoBinary(nMemo : Integer) : String ;
     If nMemo < 1 then
       Exit ;
 
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Begin
         GetOleMemoDescriptor(nMemo) ;
 
@@ -8063,7 +8069,7 @@ Function TxBase.ReadMemoBinary(nMemo : Integer) : String ;
 
 Function TxBase.GetMemoBMPPtr : BitMapPtr ;
   Begin  { TxBase.GetMemoBMPPtr }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Result := @dbfBmp ;
   End ;  { TxBase.GetMemoBMPPtr }
 
@@ -8079,7 +8085,7 @@ Function TxBase.GetMemoBMPPtr : BitMapPtr ;
 
 Function TxBase.GetMemoBMPLength : Integer ;
   Begin  { TxBase.GetMemoBMPLength }
-    Result := GetDataAreaPtr^.dbfBmpLen ;
+    Result := dbfDataArea.dbfBmpLen ;
   End ;  { TxBase.GetMemoBMPLength }
 
 
@@ -8095,14 +8101,14 @@ Function TxBase.GetMemoBMPLength : Integer ;
 Function TxBase.GetMemoBufferPtr(nField : Integer) : Pointer ;
   Begin  { TxBase.GetMemoBufferPtr }
     Case GetFieldType(nField) of
-      'B' : Result := GetDataAreaPtr^.dbfBmpPtr     ;
-      'G' : Result := GetDataAreaPtr^.dbfMemoBuffer ;
-      'M' : Result := GetDataAreaPtr^.dbfMemoBuffer ;
+      'B' : Result := dbfDataArea.dbfBmpPtr     ;
+      'G' : Result := dbfDataArea.dbfMemoBuffer ;
+      'M' : Result := dbfDataArea.dbfMemoBuffer ;
     Else
       If IsFlexFile then
-        Result := GetDataAreaPtr^.dbfMemoBuffer
+        Result := dbfDataArea.dbfMemoBuffer
       Else
-        Result := GetDataAreaPtr^.dbfMemoBuffer ;
+        Result := dbfDataArea.dbfMemoBuffer ;
     End ;
   End ;  { TxBase.GetMemoBufferPtr }
 
@@ -8119,14 +8125,14 @@ Function TxBase.GetMemoBufferPtr(nField : Integer) : Pointer ;
 Function TxBase.GetMemoBufferLen(nField : Integer) : Integer ;
   Begin  { TxBase.GetMemoBufferLen }
     Case GetFieldType(nField) of
-      'B' : Result := GetDataAreaPtr^.dbfMemoBMPDesc.BMPLength ;
-      'G' : Result := GetDataAreaPtr^.dbfMemoDesc.nWidth       ;
-      'M' : Result := GetDataAreaPtr^.dbfMemoDesc.nWidth       ;
+      'B' : Result := dbfDataArea.dbfMemoBMPDesc.BMPLength ;
+      'G' : Result := dbfDataArea.dbfMemoDesc.nWidth       ;
+      'M' : Result := dbfDataArea.dbfMemoDesc.nWidth       ;
     Else
       If IsFlexFile then
-        Result := GetDataAreaPtr^.dbfMemoDesc.nWidth
+        Result := dbfDataArea.dbfMemoDesc.nWidth
       Else
-        Result := GetDataAreaPtr^.dbfMemoDesc.nWidth ;
+        Result := dbfDataArea.dbfMemoDesc.nWidth ;
     End ;
   End ;  { TxBase.GetMemoBufferLen }
 
@@ -8216,7 +8222,7 @@ Function TxBase.GetMemoSize(pPtr : Pointer) : Integer ;
 
 Function TxBase.GetMemoFileSize : Integer ;
   Begin  { TxBase.GetMemoFileSize }
-    Result := GetDataAreaPtr^.dbfMemoFileSize ;
+    Result := dbfDataArea.dbfMemoFileSize ;
   End ;  { TxBase.GetMemoFileSize }
 
 
@@ -8248,7 +8254,7 @@ Function TxBase.GetMemoFileBlocks : Integer ;
 
 Function TxBase.GetMemoBlockType : dbfMemoType ;
   Begin  { TxBase.GetMemoBlockType }
-    Result := GetDataAreaPtr^.dbfMemoFormat ;
+    Result := dbfDataArea.dbfMemoFormat ;
   End ;  { TxBase.GetMemoBlockType }
 
 
@@ -8263,7 +8269,7 @@ Function TxBase.GetMemoBlockType : dbfMemoType ;
 
 Procedure TxBase.SetMemoBlockType(mType : dbfMemoType) ;
   Begin
-    GetDataAreaPtr^.dbfMemoFormat := mType ;
+    dbfDataArea.dbfMemoFormat := mType ;
   End ;
 
 
@@ -8293,7 +8299,7 @@ Function TxBase.CalcMemoFileBlocks : Integer ;
 
 Function TxBase.GetMemoBlockCount : Integer ;
   Begin  { TxBase.GetMemoBlockCount }
-    With GetDataAreaPtr^ , dbfMemoHeader do
+    With dbfDataArea , dbfMemoHeader do
       Begin
         Case dbfMemoFormat of
           dbfDBTMemo : dbfMemoBlockCount := dbfBlockCountDBT ;
@@ -8317,7 +8323,7 @@ Function TxBase.GetMemoBlockCount : Integer ;
 
 Procedure TxBase.SetMemoBlockCount(nBlocks : Integer) ;
   Begin  { TxBase.SetMemoBlockCount }
-    GetDataAreaPtr^.dbfMemoBlockCount := nBlocks ;
+    dbfDataArea.dbfMemoBlockCount := nBlocks ;
   End ;  { TxBase.SetMemoBlockCount }
 
 
@@ -8335,7 +8341,7 @@ Procedure TxBase.UpdateMemoBlockCount ;
     nBlocks : Integer ;
 
   Begin  { TxBase.UpdateMemoBlockCount }
-    With GetDataAreaPtr^ , dbfMemoHeader do
+    With dbfDataArea , dbfMemoHeader do
       Begin
         dbfMemoFileSize := GetMemoFileVar^.Size ;
         nBlocks := (dbfMemoFileSize div GetMemoBlockLen) - 1 ;
@@ -8440,7 +8446,7 @@ Procedure TxBase.dbfReadFixedMemo(   pRec        : Pointer ;
                                      pMemoBuffer : Pointer ;
                                  Var nMemoBytes  : Integer  ) ;
   Begin  { TxBase.dbfReadFixedMemo }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Begin
         If not (GetFieldType(nField) in MemoFieldTypes) then
           Begin
@@ -8501,7 +8507,7 @@ Procedure TxBase.dbfReadFixedMemoNo(   rfmnMemoNo : Integer ;
     rmMemoOffset , rmMaxBlock : Integer ;
 
   Begin  { TxBase.dbfReadFixedMemoNo }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Begin
         MemoBytes := 0 ;
         rmBlockBuffer := Pointer(MemoBuffer) ;
@@ -8828,7 +8834,7 @@ Function TxBase.GetCurrentMemoNumber(nField : Integer) : Integer ;
 
 Function TxBase.GetMemoFieldCount : Word ;
   Begin  { TxBase.GetMemoFieldCount }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Result := dbfMemoFldCount ;
   End ;  { TxBase.GetMemoFieldCount }
 
@@ -8844,7 +8850,7 @@ Function TxBase.GetMemoFieldCount : Word ;
 
 Function TxBase.GetMemoFldNo(gmnI : Byte) : Integer ;
   Begin  { TxBase.GetMemoFldNo }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Result := dbfMemoFldList[gmnI] ;
   End ;  { TxBase.GetMemoFldNo }
 
@@ -8867,7 +8873,7 @@ Function TxBase.GetMemoFldIdx(mfiM : Byte) : Integer ;
     mfiI : Word ;
 
   Begin  { TxBase.GetMemoFldIdx }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       If (GetFieldType(mfiM) in MemoFieldTypes) then
         For mfiI := 1 to GetMemoFieldCount do
           If dbfMemoFldList[mfiI] = mfiM then
@@ -8897,7 +8903,7 @@ Function TxBase.GetNextMemoFld(gnmfM : Byte) : Integer ;
     gnmfI : Word ;
 
   Begin  { TxBase.GetNextMemoFld }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Case GetMemoFieldCount of
         0 : GetNextMemoFld := 0 ;
         1 : GetNextMemoFld := dbfMemoFldList[1] ;
@@ -8939,7 +8945,7 @@ Procedure TxBase.WriteFixedMemoNo(wfmnMemoNo     : Integer ;
     If wfmnMemoNo = 0 then
       Exit ;
 
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Begin
         Try
           dbfMemoFileVar.SeekToPos(dbfCalcMemoOffset(wfmnMemoNo)) ;
@@ -8961,7 +8967,7 @@ Procedure TxBase.WriteFixedMemoNo(wfmnMemoNo     : Integer ;
             ShowMessage('Invalid stream write memo file in WriteFixedMemoNo') ;
             Exit ;
           End ;
-      End ;  { With GetDataAreaPtr^ do }
+      End ;  { With dbfDataArea do }
   End ;  { TxBase.WriteFixedMemoNo }
 
 
@@ -8976,7 +8982,7 @@ Procedure TxBase.WriteFixedMemoNo(wfmnMemoNo     : Integer ;
 
 Function TxBase.GetMemoFileName : String ;
   Begin
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Result := dbfMemoFileName ;
   End ;
 
@@ -8992,7 +8998,7 @@ Function TxBase.GetMemoFileName : String ;
 
 Procedure TxBase.dbfSetMemoFile ;
   Begin  { TxBase.dbfSetMemoFile }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Begin
         Case GetSignature of
           $83 , { dBASE III+ with memo file    }
@@ -9026,7 +9032,7 @@ Procedure TxBase.dbfSetMemoFile ;
 
 Function TxBase.HasMemoFile : Boolean ;
   Begin  { TxBase.HasMemoFile }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Result := dbfMemoFile ;
   End ;  { TxBase.HasMemoFile }
 
@@ -9042,7 +9048,7 @@ Function TxBase.HasMemoFile : Boolean ;
 
 Procedure TxBase.ZapDataArea ;
   Begin  { TxBase.ZapDataArea }
-    FillChar(GetDataAreaPtr^ , SizeOf(dbfDataAreaType) , 0) ;
+    FillChar(dbfDataArea , SizeOf(dbfDataAreaType) , 0) ;
   End ;  { TxBase.ZapDataArea }
 
 
@@ -9064,7 +9070,7 @@ Procedure TxBase.ZapStructures ;
 
     { Probably don't need to do this, }
     { but make sure anyway.           }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       For nI := 0 to NoOfFieldTypes do
         dbfFieldLists[nI] := nil ;
   End ;  { TxBase.ZapStructures }
@@ -9085,7 +9091,7 @@ Procedure TxBase.ResetFieldRecNoLists ;
 
   Begin  { TxBase.ResetFieldRecNoLists }
     For nI := 0 to GetFieldCount do
-      With GetDataAreaPtr^ do
+      With dbfDataArea do
         FreeAndNil(dbfFieldLists[nI]) ;
   End ;  { TxBase.ResetFieldRecNoLists }
 
@@ -9101,7 +9107,7 @@ Procedure TxBase.ResetFieldRecNoLists ;
 
 Procedure TxBase.AllocateFieldList(nField : Integer) ;
   Begin  { TxBase.AllocateFieldList }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       If dbfFieldLists[nField] = nil then
         Try
           dbfFieldLists[nField] := TIntegerList.Create ;
@@ -9125,7 +9131,7 @@ Procedure TxBase.AddRecNoToFieldList(nField : Integer ;
   Begin  { TxBase.AddRecNoToFieldList }
     AllocateFieldList(nField) ;
 
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       dbfFieldLists[nField].Add(nRec) ;
   End ;  { TxBase.AddRecNoToFieldList }
 
@@ -9141,7 +9147,7 @@ Procedure TxBase.AddRecNoToFieldList(nField : Integer ;
 
 Procedure TxBase.ZapCounts ;
   Begin  { TxBase.ZapCounts }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Begin
         FillChar(dbfFieldErrors  , SizeOf(dbfFieldErrors)  , 0) ;
         FillChar(dbfHeaderErrors , SizeOf(dbfHeaderErrors) , 0) ;
@@ -9164,7 +9170,7 @@ Procedure TxBase.ZapCounts ;
 
 Function TxBase.GetFieldErrors(cChar : Char) : Integer ;
   Begin  { TxBase.GetFieldErrors }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Begin
         If cChar = '*' then          { Unknown field type. }
           Result := dbfFieldErrors[0]
@@ -9185,7 +9191,7 @@ Function TxBase.GetFieldErrors(cChar : Char) : Integer ;
 
 Function TxBase.GetFieldErrorsIdx(nIdx : Integer ) : Integer ;
   Begin  { TxBase.GetFieldErrorsIdx }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Result := dbfFieldErrors[nIdx] ;
   End ;  { TxBase.GetFieldErrorsIdx }
 
@@ -9207,7 +9213,7 @@ Function TxBase.GetTotalFieldErrors : Integer ;
   Begin  { TxBase.GetTotalFieldErrors }
     nResult := 0 ;
 
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       For nI := 1 to Length(LegalFieldTypes) do
         nResult := nResult + dbfFieldErrors[nI] ;
 
@@ -9288,7 +9294,7 @@ Function TxBase.ValidateHeader : Boolean ;
     nI  : Integer ;
 
   Begin  { TxBase.ValidateHeader }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Begin
         ZeroMemory(@dbfHeaderErrors , SizeOf(dbfHeaderErrors)) ;
 
@@ -9341,7 +9347,7 @@ Function TxBase.RepairHeader : Boolean ;
   Begin  { TxBase.RepairHeader }
     Result := True ;
 
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Begin
         If dbfHeaderErrors[0] > 0 then
           For nI := 1 to dbfHeaderErrors[0] do
@@ -9396,7 +9402,7 @@ Function TxBase.dbDuplicateField(cFieldName : String ;
   Begin  { TxBase.dbDuplicateField }
     Result := False ;
 
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       For nI := 1 to dbfFieldCount do
         If nI <> nFieldNo then   { Skip the specified field. }
           Begin
@@ -9499,7 +9505,7 @@ Function TxBase.dbfIsBlankDate(pRec   : Pointer ;
 
 Procedure TxBase.SetMemoDateTime(smdtB : Boolean) ;
   Begin  { TxBase.SetMemoDateTime }
-    With GetDataAreaPtr^ , dbfMemoHeader do
+    With dbfDataArea , dbfMemoHeader do
       dbfMemoDateTimeSet := smdtB ;
   End ;  { TxBase.SetMemoDateTime }
 
@@ -9515,7 +9521,7 @@ Procedure TxBase.SetMemoDateTime(smdtB : Boolean) ;
 
 Procedure TxBase.dbfZapBadFieldStats ;
   Begin  { TxBase.dbfZapBadFieldStats }
-    With GetDataAreaPtr^ , dbfMemoHeader do
+    With dbfDataArea , dbfMemoHeader do
       Begin
         dbfBadFields := 0 ;
         FillChar(dbfBadFieldList , SizeOf(dbfBadFieldList) , 0) ;
@@ -9603,7 +9609,7 @@ Function TxBase.dbfCalcNewFieldType(    nField   : Integer      ;
 
 Function TxBase.GetNewFieldType(nField : Integer) : NewFieldType ;
   Begin  { TxBase.GetNewFieldType }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Result := dbfNewFieldType[nField] ;
   End ;  { TxBase.GetNewFieldType }
 
@@ -9619,7 +9625,7 @@ Function TxBase.GetNewFieldType(nField : Integer) : NewFieldType ;
 
 Function TxBase.GetNewFieldWidth(nField : Integer) : Integer ;
   Begin  { TxBase.GetNewFieldWidth }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Result := dbfNewFieldWidth[nField] ;
   End ;  { TxBase.GetNewFieldWidth }
 
@@ -9669,7 +9675,7 @@ Procedure TxBase.CleanFixedHeader ;
 
 Function TxBase.GetHeaderPtr : pxBaseHeader ;
   Begin  { TxBase.GetHeaderPtr }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Result := @dbfHeader ;
   End ;  { TxBase.GetHeaderPtr }
 
@@ -9685,7 +9691,7 @@ Function TxBase.GetHeaderPtr : pxBaseHeader ;
 
 Function TxBase.GetMemoHeaderPtr : pdbfMemoHeader;
   Begin  { TxBase.GetMemoHeaderPtr }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Result := @dbfMemoHeader ;
   End ;  { TxBase.GetMemoHeaderPtr }
 
@@ -9767,7 +9773,7 @@ Function TxBase.GetMemoFieldTypesPtr : pTStringList ;
 
 Function TxBase.GetBadFieldCnt : Integer ;
   Begin  { TxBase.GetBadFieldCnt }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Begin
         Result := dbfBadFields ;
       End ;
@@ -9785,7 +9791,7 @@ Function TxBase.GetBadFieldCnt : Integer ;
 
 Function TxBase.GetBadFieldsPtr : pTArrayInteger ;
   Begin  { TxBase.GetBadFieldsPtr }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Result := @dbfBadFieldList ;
   End ;  { TxBase.GetBadFieldsPtr }
 
@@ -9801,7 +9807,7 @@ Function TxBase.GetBadFieldsPtr : pTArrayInteger ;
 
 Function TxBase.GetGoodListPtr : pTStringList ;
   Begin  { TxBase.GetGoodListPtr }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Result := @dbfGoodRecList ;
   End ;  { TxBase.GetGoodListPtr }
 
@@ -9817,7 +9823,7 @@ Function TxBase.GetGoodListPtr : pTStringList ;
 
 Function TxBase.GetBadListPtr : pTStringList ;
   Begin  { TxBase.GetBadListPtr }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Result := @dbfBadRecList ;
   End ;  { TxBase.GetBadListPtr }
 
@@ -9833,7 +9839,7 @@ Function TxBase.GetBadListPtr : pTStringList ;
 
 Function TxBase.GetBadNameListPtr : pTStringList ;
   Begin  { TxBase.GetBadNameListPtr }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Result := @dbfBadNameList ;
   End ;  { TxBase.GetBadNameListPtr }
 
@@ -9866,7 +9872,7 @@ Function TxBase.GetBadFieldNo(nIdx : Integer) : Integer ;
   Begin  { TxBase.GetBadFieldNo }
     If ValidFieldNumber(nIdx) then
       Begin
-        With GetDataAreaPtr^ do
+        With dbfDataArea do
           Result := dbfBadFieldList[nIdx] ;
       End
     Else
@@ -9885,7 +9891,7 @@ Function TxBase.GetBadFieldNo(nIdx : Integer) : Integer ;
 
 Function TxBase.GetBadRecordCnt : Integer ;
   Begin  { TxBase.GetBadRecordCnt }
-    Result := GetDataAreaPtr^.dbfBadRecords ;
+    Result := dbfDataArea.dbfBadRecords ;
   End ;  { TxBase.GetBadRecordC`P8
 
 
@@ -9900,7 +9906,7 @@ Function TxBase.GetBadRecordCnt : Integer ;
 
 Function TxBase.GetBlobFileName : String ;
   Begin  { TxBase.GetBlobFileName }
-    Result := GetDataAreaPtr^.dbfBlobFile ;
+    Result := dbfDataArea.dbfBlobFile ;
   End ;  { TxBase.GetBlobFileName }
 
 
@@ -10223,7 +10229,7 @@ Procedure TxBase.dbfSetupRestructure ;
     nDecimals : Integer               ;
 
   Begin  { TxBase.dbfSetupRestructure }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Begin
         dbfRestructureList.Clear ;
 
@@ -10259,7 +10265,7 @@ Procedure TxBase.dbfSetupRestructure ;
 
 Function TxBase.GetRestructureListPtr : pTStringList ;
   Begin  { TxBase.GetRestructureListPtr }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Result := @dbfRestructureList ;
   End ;  { TxBase.GetRestructureListPtr }
 
@@ -10447,7 +10453,7 @@ Function TxBase.AsHexStr(pRec   : Pointer ;
 
 Function TxBase.IsHeaderDirty : Boolean ;
   Begin  { TxBase.IsHeaderDirty }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Begin
         Result := dbfHeaderDirty ;
       End ;
@@ -10465,7 +10471,7 @@ Function TxBase.IsHeaderDirty : Boolean ;
 
 Procedure TxBase.SetHeaderDirty(bDirty : Boolean) ;
   Begin  { TxBase.SetHeaderDirty }
-    With GetDataAreaPtr^ do
+    With dbfDataArea do
       Begin
         dbfHeaderDirty := bDirty ;
       End ;
@@ -10737,7 +10743,7 @@ Function TxBase.GetMemoOffsetDBV(pRec   : Pointer ;
 
 Procedure TxBase.SetUserIndex(nIdx : Integer  ) ;
   Begin  { TxBase.SetUserIndex }
-    GetDataAreaPtr^.dbfUserIndex := nIdx ;
+    dbfDataArea.dbfUserIndex := nIdx ;
   End ;  { TxBase.SetUserIndex }
 
 
@@ -10752,7 +10758,7 @@ Procedure TxBase.SetUserIndex(nIdx : Integer  ) ;
 
 Function TxBase.GetUserIndex : Integer ;
   Begin  { TxBase.GetUserIndex }
-    Result := GetDataAreaPtr^.dbfUserIndex ;
+    Result := dbfDataArea.dbfUserIndex ;
   End ;  { TxBase.GetUserIndex }
 
 
@@ -10826,7 +10832,7 @@ Procedure TxBase.CloneFileHeader(cFile : String) ;
 
 Function TxBase.IsDataFileOpen : Boolean ;
   Begin  { TxBase.IsDataFileOpen }
-    Result := GetDataAreaPtr^.dbfOpened ;
+    Result := dbfDataArea.dbfOpened ;
   End ;  { TxBase.IsDataFileOpen }
 
 
@@ -10841,7 +10847,7 @@ Function TxBase.IsDataFileOpen : Boolean ;
 
 Function TxBase.IsMemoFileOpen : Boolean ;
   Begin  { TxBase.IsMemoFileOpen }
-    Result := GetDataAreaPtr^.dbfMemoOpened ;
+    Result := dbfDataArea.dbfMemoOpened ;
   End ;  { TxBase.IsMemoFileOpen }
 
 
