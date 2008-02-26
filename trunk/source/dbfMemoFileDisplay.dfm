@@ -51,6 +51,7 @@ object frmMemoFileDisplay: TfrmMemoFileDisplay
     Left = 0
     Top = 41
     Width = 688
+    ParentBackground = False
     TabOrder = 1
   end
   object pnlMain: TPanel
