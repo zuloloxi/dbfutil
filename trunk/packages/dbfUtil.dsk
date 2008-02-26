@@ -1,34 +1,45 @@
 [Closed Files]
-File_0=TSourceModule,'G:\jvcl\run\JvThread.pas',0,1,241,1,181,0,0,,
-File_1=TSourceModule,'G:\Units\source\bcFlushDrive.pas',0,1,321,33,336,0,0,,
-File_2=TSourceModule,'G:\Units\source\bcDialogUtilities.pas',0,1,25,1,1,0,0,,
-File_3=TSourceModule,'G:\Units\source\UnsafeOff.inc',0,1,1,1,1,0,0,,
-File_4=TSourceModule,'g:\components\source\bcNumericEdit.pas',0,1,293,1,306,0,0,,
-File_5=TSourceModule,'G:\dbfUtil\dbfInclude.inc',0,1,1,13,5,0,0,,
-File_6=TSourceModule,'G:\Units\source\bcUnitsInclude.inc',0,1,1,1,21,0,0,,
-File_7=TSourceModule,'g:\units\source\bcAllUnits.pas',0,1,18,13,30,0,0,,
-File_8=TSourceModule,'G:\Units\source\bcFileUtilities.pas',0,1,2428,25,2445,0,0,,
-File_9=TSourceModule,'G:\Includes\General.inc',0,1,1,2,4,0,0,,
+File_0=TSourceModule,'G:\_Includes\General.inc',0,1,1,1,1,0,0,,
+File_1=TSourceModule,'G:\dbfUtil\source\dbfInclude.inc',0,1,1,11,5,0,0,,
+File_2=TSourceModule,'c:\program files\codegear\rad studio\5.0\SOURCE\WIN32\RTL\SYS\system.pas',0,1,9938,1,9950,0,0,,
+File_3=TSourceModule,'c:\program files\codegear\rad studio\5.0\SOURCE\WIN32\RTL\SYS\SysUtils.pas',0,1,11761,1,11773,0,0,,
+File_4=TSourceModule,'G:\DFS\source\MRUFList.pas',0,1,1118,1,1130,0,0,,
+File_5=TSourceModule,'G:\jvcl\run\JvThread.pas',0,1,241,1,181,0,0,,
+File_6=TSourceModule,'G:\Units\source\bcFlushDrive.pas',0,1,321,33,336,0,0,,
 
 [Modules]
-Module0=G:\dbfUtil\source\dbfMain.pas
-Module1=default.htm
-Count=2
+Module0=c:\program files\codegear\rad studio\5.0\source\Win32\rtl\common\Classes.pas
+Module1=G:\dbfUtil\source\dbfMain.pas
+Module2=G:\dbfUtil\source\dbfStructure.pas
+Module3=default.htm
+Count=4
 EditWindowCount=1
+
+[c:\program files\codegear\rad studio\5.0\source\Win32\rtl\common\Classes.pas]
+ModuleType=TSourceModule
+FormState=0
+FormOnTop=0
 
 [G:\dbfUtil\source\dbfMain.pas]
 ModuleType=TSourceModule
 FormState=1
 FormOnTop=1
 
+[G:\dbfUtil\source\dbfStructure.pas]
+ModuleType=TSourceModule
+FormState=0
+FormOnTop=0
+
 [default.htm]
 ModuleType=TURLModule
 
 [EditWindow0]
-ViewCount=2
-CurrentEditView=G:\dbfUtil\source\dbfMain.pas
+ViewCount=4
+CurrentEditView=c:\program files\codegear\rad studio\5.0\source\Win32\rtl\common\Classes.pas
 View0=0
 View1=1
+View2=2
+View3=3
 PercentageSizes=1
 Create=1
 Visible=1
@@ -64,13 +75,35 @@ WelcomePageURL=bds:/default.htm
 [View1]
 CustomEditViewType=TEditView
 Module=G:\dbfUtil\source\dbfMain.pas
-CursorX=1
-CursorY=1
-TopLine=1
+CursorX=65
+CursorY=308
+TopLine=298
 LeftCol=1
 Elisions=
 Bookmarks=
 EditViewName=G:\dbfUtil\source\dbfMain.pas
+
+[View2]
+CustomEditViewType=TEditView
+Module=G:\dbfUtil\source\dbfStructure.pas
+CursorX=1
+CursorY=6581
+TopLine=6569
+LeftCol=1
+Elisions=
+Bookmarks=
+EditViewName=G:\dbfUtil\source\dbfStructure.pas
+
+[View3]
+CustomEditViewType=TEditView
+Module=c:\program files\codegear\rad studio\5.0\source\Win32\rtl\common\Classes.pas
+CursorX=1
+CursorY=5486
+TopLine=5474
+LeftCol=1
+Elisions=
+Bookmarks=
+EditViewName=c:\program files\codegear\rad studio\5.0\source\Win32\rtl\common\Classes.pas
 
 [Watches]
 Count=0
@@ -97,9 +130,7 @@ Dockable=1
 StayOnTop=0
 
 [Breakpoints]
-Count=2
-Breakpoint0='G:\dbfUtil\dbfMain.pas',424,'',0,1,'',1,0,0,'',1,'','','',0
-Breakpoint1='G:\dbfUtil\dbfStructure.pas',6530,'',0,1,'',1,0,0,'',1,'','','',0
+Count=0
 
 [AddressBreakpoints]
 Count=0
@@ -116,11 +147,11 @@ Width=10000
 Height=1068
 MaxLeft=-39
 MaxTop=-54
-MaxWidth=10078
-MaxHeight=1770
+MaxWidth=10000
+MaxHeight=1068
 ClientWidth=10000
-ClientHeight=1405
-BottomPanelSize=677
+ClientHeight=703
+BottomPanelSize=0
 
 [ProjectManager]
 PercentageSizes=1
@@ -654,7 +685,4 @@ StayOnTop=0
 TabPosition=1
 ActiveTabID=ProjectManager
 TabDockClients=ProjectManager,ModelViewTool,DataExplorer
-
-[ActiveProject]
-ActiveProject=1
 

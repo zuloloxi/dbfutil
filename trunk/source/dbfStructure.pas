@@ -6486,8 +6486,8 @@ Procedure TxBase.dbfInternalCalculations ;
 ***********************************************************************}
 
 Function TxBase.ResetShortFileName : TFileName ;
-  Var
-    bWasOpen : Boolean ;
+//  Var
+//    bWasOpen : Boolean ;
 
   Begin  { TxBase.ResetShortFileName }
   {
@@ -6573,15 +6573,15 @@ Procedure TxBase.dbfCloseDataFileVar ;
 
 Procedure TxBase.dbfCloseMemoFileVar ;
   Begin  { TxBase.dbfCloseMemoFileVar }
-    If HasMemoFile then
+//    If HasMemoFile then
       With dbfDataArea do
-        Try
-          If MemoFileIsOpen then
-            GetMemoFilePtr^.Free ;
-          dbfMemoOpened := False ;
-        Except
-          ShowErrorMessage('Error closing memo file.') ;
-        End ;
+        If dbfMemoOpened then
+          Try
+            dbfMemoFileVar.Free ;
+//            dbfMemoOpened := False ;
+          Except
+            ErrorMsg('Error closing memo file.') ;
+          End ;
   End ;  { TxBase.dbfCloseMemoFileVar }
 
 
